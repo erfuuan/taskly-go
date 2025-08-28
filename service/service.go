@@ -30,3 +30,13 @@ func RunTasks() ([]string, error) {
 
 	return msgs, nil
 }
+
+func AddTask(title string, dueDate time.Time) error {
+	query := `INSERT INTO tasks (title, duedate, notified) VALUES ($1, $2, false)`
+	_, err := db.DB.Exec(query, title, dueDate)
+	if err != nil {
+		return fmt.Errorf("failed to add task: %w", err)
+	}
+	fmt.Println("✅ Task added:", title)
+	return nil
+}
