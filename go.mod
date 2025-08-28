@@ -1,4 +1,4 @@
-module github.com/yourusername/taskly
+module github.com/erfuuan/taskly-go
 
 go 1.22
 

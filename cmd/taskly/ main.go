@@ -5,11 +5,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
+	"github.com/spf13/cobra"
+
 	"github.com/erfuuan/taskly-go/internal/db"
 	"github.com/erfuuan/taskly-go/internal/server"
 	"github.com/erfuuan/taskly-go/internal/tasks"
-	"github.com/joho/godotenv"
-	"github.com/spf13/cobra"
 )
 
 func main() {
