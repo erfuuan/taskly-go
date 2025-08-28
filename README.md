@@ -1,7 +1,7 @@
 
-# Taskly
+# Taskly-go
 
-Taskly is a lightweight task management application built with **Golang** and **PostgreSQL**.  
+Taskly-go is a lightweight task management application built with **Golang** and **PostgreSQL**.  
 It provides a **CLI for task management** and a **REST API** for health checks.
 
 ---
