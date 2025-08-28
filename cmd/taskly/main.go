@@ -42,11 +42,13 @@ func main() {
 		Use:   "taskly",
 		Short: "Taskly CLI & REST API",
 		Run: func(cmd *cobra.Command, args []string) {
+			// Start REST API server
 			go func() {
 				fmt.Println("🚀 REST API server starting on port 3000...")
 				server.Start()
 			}()
 
+			// Start periodic task runner
 			go func() {
 				for {
 					msgs, err := service.RunTasks()
@@ -66,6 +68,7 @@ func main() {
 		},
 	}
 
+	// Add task command
 	addCmd := &cobra.Command{
 		Use:   "add",
 		Short: "Add a new task",
@@ -86,13 +89,32 @@ func main() {
 			}
 		},
 	}
-
 	addCmd.Flags().String("title", "", "Task title")
 	addCmd.Flags().String("duedate", "", "Due date in YYYY-MM-DD-HH:mm")
 	addCmd.MarkFlagRequired("title")
 	addCmd.MarkFlagRequired("duedate")
-
 	rootCmd.AddCommand(addCmd)
+
+	// Run tasks manually command
+	runCmd := &cobra.Command{
+		Use:   "run",
+		Short: "Run task checker once",
+		Run: func(cmd *cobra.Command, args []string) {
+			msgs, err := service.RunTasks()
+			if err != nil {
+				fmt.Println("❌ Task runner error:", err)
+				return
+			}
+			if len(msgs) == 0 {
+				fmt.Println("✅ No tasks due now")
+			} else {
+				for _, m := range msgs {
+					fmt.Println("⏰", m)
+				}
+			}
+		},
+	}
+	rootCmd.AddCommand(runCmd)
 
 	rootCmd.Execute()
 }

@@ -32,11 +32,24 @@ func RunTasks() ([]string, error) {
 }
 
 func AddTask(title string, dueDate time.Time) error {
+	// Check if task with same title exists
+	var exists bool
+	err := db.DB.QueryRow(`SELECT EXISTS(SELECT 1 FROM tasks WHERE title = $1)`, title).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("failed to check existing task: %w", err)
+	}
+
+	if exists {
+		return fmt.Errorf("task with title '%s' already exists", title)
+	}
+
+	// Insert new task
 	query := `INSERT INTO tasks (title, duedate, notified) VALUES ($1, $2, false)`
-	_, err := db.DB.Exec(query, title, dueDate)
+	_, err = db.DB.Exec(query, title, dueDate)
 	if err != nil {
 		return fmt.Errorf("failed to add task: %w", err)
 	}
+
 	fmt.Println("✅ Task added:", title)
 	return nil
 }
