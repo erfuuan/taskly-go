@@ -3,8 +3,8 @@
 # =======================
 FROM golang:1.22-alpine AS build
 
-# Install git (needed for go modules)
-RUN apk add --no-cache git
+# Install git and build tools (if any dependency needs C)
+RUN apk add --no-cache git gcc musl-dev
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN go mod download
 # Copy the rest of the source code
 COPY . .
 
-# Build the Go binary (optimized for Linux)
+# Build the Go binary for the host architecture
 RUN go build -o taskly-cli ./cmd/taskly
 
 # =======================
