@@ -3,15 +3,21 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func Start() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, `{"status":"ok"}`)
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "OK")
 	})
 
-	fmt.Println("🚀 Taskly REST API running on :3000")
-	http.ListenAndServe(":3000", mux)
+	fmt.Printf("🚀 Taskly REST API running on :%s\n", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		fmt.Println("❌ REST API server error:", err)
+	}
 }
